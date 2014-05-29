@@ -16,19 +16,22 @@
 	    return $array;
 	}
 
-	function save_file($items, $filename)
+	function newfile($filename, $array)
 	{
-
+	    $handle = fopen($filename, 'w');
+	        foreach ($array as $value)
+	        {
+	        fwrite($handle, $value . PHP_EOL);
+	        }
+	    fclose($handle);
 	}
 
-?>
-<?php
-	echo "<h1>GET</h1>";
-	var_dump($_GET);
-	echo "<br>";
-	echo "<h1>POST</h1>";
-	var_dump($_POST);
-	echo "<br>";
+	// echo "<h1>GET</h1>";
+	// var_dump($_GET);
+	// echo "<br>";
+	// echo "<h1>POST</h1>";
+	// var_dump($_POST);
+	// echo "<br>";
 ?>
 <html>
 <head>
@@ -37,15 +40,25 @@
 <body>
 	<h2>TODO List</h2>
 	<ul>
-	<?php $items = load_file(FILENAME, $items);
-	foreach($items as $item)
-	{
-		echo "<li>" . $item . "</li><br>";
-	}
+	<?php
+		$items = load_file(FILENAME, $items);
+		$item = $_POST;
+
+		foreach($item as $new)
+		{
+			$items[] = $new;
+		}
+
+		foreach($items as $item)
+		{
+			echo "<li>" . $item . "</li><br>";
+		}
+
+		newfile(FILENAME, $items);
 	?>
 	</ul>
 
-	<form method="GET">
+	<form method="POST">
 		<p>
 			<label for="new_item">New Item:</label>
 			<br>
