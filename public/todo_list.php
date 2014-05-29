@@ -49,13 +49,13 @@
 			$items[] = $_POST['new_item'];
 		}
 
+		//if the user clicks the link to remove and item, remove item and reindex the array
 		if(isset($_GET['index']))
 		{
 				$index = $_GET['index'];
 				unset($items[$index]);
 				$items = array_values($items);
 		}
-
 
 		//display each item in the array
 		foreach($items as $key => $item)
