@@ -16,12 +16,12 @@
 	    return $array;
 	}
 
-	function newfile($filename, $array)
+	function savefile($filename, $array)
 	{
 	    $handle = fopen($filename, 'w');
 	        foreach ($array as $value)
 	        {
-	        fwrite($handle, $value . PHP_EOL);
+	        	fwrite($handle, $value . PHP_EOL);
 	        }
 	    fclose($handle);
 	}
@@ -41,23 +41,34 @@
 	<h2>TODO List</h2>
 	<ul>
 	<?php
+		//load file with list
 		$items = load_file(FILENAME, $items);
-		$item = $_POST;
-
-		foreach($item as $new)
+		//if the post is not empty, add item to the list array
+		if(!empty($_POST))
 		{
-			$items[] = $new;
+			$items[] = $_POST['new_item'];
 		}
 
-		foreach($items as $item)
+		if(isset($_GET['index']))
 		{
-			echo "<li>" . $item . "</li><br>";
+				$index = $_GET['index'];
+				unset($items[$index]);
+				$items = array_values($items);
 		}
 
-		newfile(FILENAME, $items);
+
+		//display each item in the array
+		foreach($items as $key => $item)
+		{
+			echo "<li>" . $item . " " . "<a href=\"todo_list.php?index=" . $key . "\">Mark Complete</a></li><br>";
+		}
+
+		//save/overwrite the defined file with added items
+		savefile(FILENAME, $items);
 	?>
 	</ul>
 
+	<!-- form to post new items to the existing array -->
 	<form method="POST">
 		<p>
 			<label for="new_item">New Item:</label>
