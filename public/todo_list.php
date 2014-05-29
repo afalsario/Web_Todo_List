@@ -5,15 +5,22 @@
 
 	function load_file($filename, $array)
 	{
-		$handle = fopen($filename, 'r');
-	    $contents = trim(fread($handle, filesize($filename)));
-	    $list = explode("\n", $contents);
-	        foreach ($list as $value)
+		if(filesize($filename) > 0)
+		{
+			$handle = fopen($filename, 'r');
+		    $contents = trim(fread($handle, filesize($filename)));
+		    $list = explode("\n", $contents);
+		    foreach ($list as $value)
 	        {
 	            array_push($array, $value);
 	        }
 	    fclose($handle);
 	    return $array;
+		}
+		else
+		{
+			return array();
+		}
 	}
 
 	function savefile($filename, $array)
@@ -60,7 +67,7 @@
 		//display each item in the array
 		foreach($items as $key => $item)
 		{
-			echo "<li>" . $item . " " . "<a href=\"todo_list.php?index=" . $key . "\">Mark Complete</a></li><br>";
+			echo "<li>" . $item . " " . "<a href=\"todo_list.php?index=" . $key . "\">Remove Item</a></li><br>";
 		}
 
 		//save/overwrite the defined file with added items
@@ -69,11 +76,11 @@
 	</ul>
 
 	<!-- form to post new items to the existing array -->
-	<form method="POST">
+	<form method="POST" action="todo_list.php">
 		<p>
 			<label for="new_item">New Item:</label>
 			<br>
-			<input type="text" id="new_item" name="new_item">
+			<input type="text" id="new_item" name="new_item" autofocus="autofocus">
 		</p>
 		<input type="submit" value="Add">
 	</form>
