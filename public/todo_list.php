@@ -86,7 +86,7 @@
 	<ul>
 	<!-- display each item in the array -->
 	<? foreach($items as $key => $item): ?>
-		<li> <?= $item . " " . "<a href=\"todo_list.php?index={$key}\">Remove Item</a>";?></li><br>
+		<li> <?= htmlspecialchars(strip_tags($item)) . " <a href=\"todo_list.php?index={$key}\">Remove Item</a>";?></li><br>
 	<? endforeach; ?>
 	</ul>
 	<!-- form to post new items to the existing array -->
