@@ -1,0 +1,52 @@
+html {
+	background-color: #00C9E6;
+	margin: 0;
+	padding: 0;
+}
+
+img {
+	display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
+div.container {
+	width: 600px;
+	height: 300px;
+	background-color: white;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	box-shadow: 0px 0px 20px 5px #000;
+	overflow-y: auto;
+	position: relative;
+	border-radius: 20px;
+}
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+	font-family: 'Lobster', cursive;
+	font-size: 30px;
+}
+
+footer {
+	text-align: center;
+	font-family: 'Lobster', cursive;
+	color: orange;
+
+}
+
+h3 {
+	color: orange;
+	margin:0;
+	padding:0;
+}
+
+input {
+	border-radius: 20px;
+	background-color: violet;
+	color: #FFF;
+	font-family: 'Lobster', cursive;
+	font-size: 20px;
+}
