@@ -4,50 +4,17 @@
 	$items = [];
 	$errorMessage = '';
 
-	function load_file($filename, $array)
-	{
-		if(is_readable($filename) && filesize($filename) > 0)
-		{
-			$handle = fopen($filename, 'r');
-		    $contents = trim(fread($handle, filesize($filename)));
-		    $list = explode(PHP_EOL, $contents);
-		    foreach ($list as $value)
-	        {
-	            array_push($array, $value);
-	        }
-	    fclose($handle);
-	    return $array;
-		}
-		else
-		{
-			return array();
-		}
-	}
-
-	function savefile($filename, $array)
-	{
-	    $handle = fopen($filename, 'w');
-        foreach ($array as $value)
-        {
-        	fwrite($handle, $value . PHP_EOL);
-        }
-	    fclose($handle);
-	}
-
-	// echo "<h1>GET</h1>";
-	// var_dump($_GET);
-	// echo "<br>";
-	// echo "<h1>POST</h1>";
-	// var_dump($_POST);
-	// echo "<br>";
-	// var_dump($_FILES);
+	//require class file
+	require('classes/filestore.php');
+	$todo = new Filestore($file_name);
 
 	//load file with list
-	$items = load_file($file_name, $items);
+	$items = $todo->read_lines();
 	//if the post is not empty, add item to the list array
 	if(!empty($_POST))
 	{
-		$items[] = $_POST['new_item'];
+		$item = trim($_POST['new_item']);
+		array_push($items, $item);
 	}
 
 	//if the user clicks the link to remove and item, remove item and reindex the array
@@ -72,40 +39,56 @@
     	$saved_filename = $upload_dir . $filename;
     	// Move the file from the temp location to our uploads directory
     	move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
-    	$items = load_file($saved_filename, $items);
+    	$add_new_file = new Filestore($saved_filename);
+
+    	$new_items = $add_new_file->read_lines();
+    	$items = array_merge($items, $new_items);
+    	$todo->write_lines($items);
 	}
 	//save/overwrite the defined file with added items
-	savefile($file_name, $items);
+	$todo->write_lines($items);
 ?>
 <html>
 <head>
 	<title>TODO List</title>
+	<!-- <link rel="stylesheet" href="/css/todo_list.css"> -->
+	<!-- <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'> -->
 </head>
 <body>
-	<h2>TODO List</h2>
-	<ul>
-	<!-- display each item in the array -->
-	<? foreach($items as $key => $item): ?>
-		<li> <?= htmlspecialchars(strip_tags($item)) . " <a href=\"todo_list.php?index={$key}\">Remove Item</a>";?></li><br>
-	<? endforeach; ?>
-	</ul>
+	<header>
+		<!-- <img src="/img/todo1.png"> -->
+	</header>
+	<div class="container">
+		<table>
+			<ul>
+			<!-- display each item in the array -->
+			<? foreach($items as $key => $item): ?>
+				<tr>
+				<td><li> <?= htmlspecialchars(strip_tags($item)) . " "; ?></td> <td><?="<a href=\"todo_list.php?index={$key}\">Remove Item</a>";?></li></td>
+				</tr>
+			<? endforeach; ?>
+			</ul>
+		</table>
+	</div>
+
 	<!-- form to post new items to the existing array -->
-	<form method="POST" action="/todo_list.php">
-		<p>
-			<label for="new_item">New Item:</label>
-			<input type="text" id="new_item" name="new_item" autofocus="autofocus">
-			<input type="submit" value="Add">
-		</p>
-	</form>
-	<h3>Upload File</h3>
-	<? if (!empty($errorMessage)): ?>
-	    <p> <?= $errorMessage; ?> </p>
-	<? endif; ?>
-	<form method="POST" enctype="multipart/form-data">
-	<p>
-		<input type="file" id="file1" name="file1">
-		<input type="submit" value="Upload">
-	</p>
-	</form>
+	<footer>
+		<form method="POST" action="/todo_list.php">
+			<p>
+				<label for="new_item">New Item:</label>
+				<input type="text" id="new_item" name="new_item" autofocus="autofocus">
+				<input type="submit" value="Add">
+			</p>
+		</form>
+		<h3>Upload File</h3>
+		<? if (!empty($errorMessage)): ?>
+		    <p> <?= $errorMessage; ?> </p>
+		<? endif; ?>
+		<form method="POST" enctype="multipart/form-data">
+			<input type="file" id="file1" name="file1">
+			<input type="submit" value="Upload">
+		</form>
+	</footer>
 </body>
+
 </html>
