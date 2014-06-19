@@ -3,16 +3,46 @@
 class Filestore {
 
     public $filename = '';
+    public $is_csv = FALSE;
 
     function __construct($filename = '')
     {
         $this->filename = $filename;
+        $ext = substr($filename, -3);
+        if($ext == 'csv')
+        {
+            $this->is_csv = TRUE;
+        }
+    }
+
+    public function read()
+    {
+        if($this->is_csv)
+        {
+            return $this->read_csv();
+        }
+        else
+        {
+            return $this->read_lines();
+        }
+    }
+
+     public function write($array)
+    {
+        if($this->is_csv)
+        {
+            return $this->write_csv($array);
+        }
+        else
+        {
+            return $this->write_lines($array);
+        }
     }
 
     /**
      * Returns array of lines in $this->filename
      */
-    function read_lines()
+    private function read_lines()
     {
         if(is_readable($this->filename) && filesize($this->filename) > 0)
         {
@@ -31,7 +61,7 @@ class Filestore {
     /**
      * Writes each element in $array to a new line in $this->filename
      */
-    function write_lines($array)
+    private function write_lines($array)
     {
         $handle = fopen($this->filename, 'w');
         foreach ($array as $value)
@@ -44,17 +74,36 @@ class Filestore {
     /**
      * Reads contents of csv $this->filename, returns an array
      */
-    function read_csv()
+    private function read_csv()
     {
-
+        $handle = fopen($this->filename, 'r');
+        $array = [];
+        while(!feof($handle))
+        {
+            $row = fgetcsv($handle);
+            if(is_array($row))
+            {
+                $array[] = $row;
+            }
+        }
+        fclose($handle);
+        return $array;
     }
 
     /**
      * Writes contents of $array to csv $this->filename
      */
-    function write_csv($array)
+    private function write_csv($array)
     {
-
+        if(is_writeable($this->filename))
+        {
+            $handle = fopen($this->filename, 'w');
+            foreach ($array as $fields)
+            {
+                fputcsv($handle, $fields);
+            }
+            fclose($handle);
+        }
     }
 
 }

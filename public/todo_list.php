@@ -9,7 +9,7 @@
 	$todo = new Filestore($file_name);
 
 	//load file with list
-	$items = $todo->read_lines();
+	$items = $todo->read();
 	//if the post is not empty, add item to the list array
 	if(!empty($_POST))
 	{
@@ -41,12 +41,12 @@
     	move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
     	$add_new_file = new Filestore($saved_filename);
 
-    	$new_items = $add_new_file->read_lines();
+    	$new_items = $add_new_file->read();
     	$items = array_merge($items, $new_items);
-    	$todo->write_lines($items);
+    	$todo->write($items);
 	}
 	//save/overwrite the defined file with added items
-	$todo->write_lines($items);
+	$todo->write($items);
 ?>
 <html>
 <head>
