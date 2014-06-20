@@ -1,4 +1,6 @@
 <?
+	class InvalidInputException{}
+
 	// define('FILENAME', 'new.txt');
 	$file_name = 'new.txt';
 	$items = [];
@@ -10,6 +12,8 @@
 
 	//load file with list
 	$items = $todo->read();
+
+
 
 try
 {
@@ -27,7 +31,7 @@ try
 		}
 	}
 }
-catch (Exception $e)
+catch (InvalidInputException $e)
 {
 	$e->getMessage();
 }
@@ -67,8 +71,8 @@ catch (Exception $e)
 <head>
 	<title>TODO List</title>
 	<!-- <link rel="stylesheet" href="/css/todo_list.css"> -->
-	<!-- <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'> -->
-</head>
+<!-- 	<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+ --></head>
 <body>
 <? if(isset($e)): ?>
 <p style="color:red"><?= $e->getMessage(); ?></p>
