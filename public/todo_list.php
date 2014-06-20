@@ -10,6 +10,9 @@
 
 	//load file with list
 	$items = $todo->read();
+
+try
+{
 	//if the post is not empty, add item to the list array
 	if(isset($_POST['new_item']))
 	{
@@ -20,9 +23,15 @@
 		}
 		else
 		{
-			throw new Exception("Error");
+			throw new Exception("Error! Please enter a todo longer than 0 characters and less than 240");
 		}
 	}
+}
+catch (Exception $e)
+{
+	$e->getMessage();
+}
+
 	//if the user clicks the link to remove and item, remove item and reindex the array
 	if(isset($_GET['index']))
 	{
@@ -61,6 +70,9 @@
 	<!-- <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'> -->
 </head>
 <body>
+<? if(isset($e)): ?>
+<p style="color:red"><?= $e->getMessage(); ?></p>
+<? endif; ?>
 	<header>
 		<!-- <img src="/img/todo1.png"> -->
 	</header>
