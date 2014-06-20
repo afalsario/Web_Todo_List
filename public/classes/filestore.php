@@ -31,11 +31,11 @@ class Filestore {
     {
         if($this->is_csv)
         {
-            return $this->write_csv($array);
+            $this->write_csv($array);
         }
         else
         {
-            return $this->write_lines($array);
+            $this->write_lines($array);
         }
     }
 

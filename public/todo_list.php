@@ -11,12 +11,18 @@
 	//load file with list
 	$items = $todo->read();
 	//if the post is not empty, add item to the list array
-	if(!empty($_POST))
+	if(isset($_POST['new_item']))
 	{
+		if(strlen($_POST['new_item']) != 0 && (strlen($_POST['new_item'])) <= 240)
+		{
 		$item = trim($_POST['new_item']);
 		array_push($items, $item);
+		}
+		else
+		{
+			throw new Exception("Error");
+		}
 	}
-
 	//if the user clicks the link to remove and item, remove item and reindex the array
 	if(isset($_GET['index']))
 	{
@@ -39,8 +45,8 @@
     	$saved_filename = $upload_dir . $filename;
     	// Move the file from the temp location to our uploads directory
     	move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
-    	$add_new_file = new Filestore($saved_filename);
 
+    	$add_new_file = new Filestore($saved_filename);
     	$new_items = $add_new_file->read();
     	$items = array_merge($items, $new_items);
     	$todo->write($items);
