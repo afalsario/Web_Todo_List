@@ -1,5 +1,5 @@
 <?
-	class InvalidInputException{}
+	class InvalidInputException extends Exception{}
 
 	// define('FILENAME', 'new.txt');
 	$file_name = 'new.txt';
@@ -27,7 +27,7 @@ try
 		}
 		else
 		{
-			throw new Exception("Error! Please enter a todo longer than 0 characters and less than 240");
+			throw new InvalidInputException("Error! Please enter a todo longer than 0 characters and less than 240");
 		}
 	}
 }
