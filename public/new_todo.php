@@ -1,6 +1,6 @@
 <?php
 
-$items_per_page = 12;
+$items_per_page = 2;
 
 class InvalidInputException extends Exception{}
 
@@ -22,7 +22,7 @@ try
 	if(isset($_POST['new_item']))
 	{
 		//-------------a. Is item being added? => Add todo!
-		if(isset($_POST['new_item']) && (strlen($_POST['new_item']) != 0 && (strlen($_POST['new_item'])) <= 240))
+		if((strlen($_POST['new_item']) != 0 && (strlen($_POST['new_item'])) <= 240))
 		{
 			$stmt = $dbc->prepare('INSERT INTO todo_list (todo) VALUES (:todo)');
 		    $stmt->bindValue(':todo', htmlspecialchars(strip_tags($_POST['new_item'])), PDO::PARAM_STR);
@@ -43,6 +43,11 @@ catch (InvalidInputException $e)
 {
 	$e->getMessage();
 }
+
+ if(isset($_POST['reset']))
+    {
+        $dbc->query('TRUNCATE TABLE todo_list;');
+    }
 
 //-------------3. Query DB for total todo count.
 $count = $dbc->query('SELECT count(*) FROM todo_list')->fetchColumn();
@@ -67,10 +72,11 @@ $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html>
 <head>
 	<title>TODO List</title>
-    <link rel="stylesheet" href="/css/.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/todo_list.css">
 </head>
 <body>
-
+    <h2>ToDo List</h2>
     <? if(isset($e)): ?>
         <p style="color:red"> <?= $e->getMessage(); ?> </p>
     <? endif; ?>
@@ -83,7 +89,7 @@ $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     				<tr>
         				<td><?= $item['id']; ?></td>
         				<td><?= $item['todo'] ?> </td>
-        				<td><button class="btn-remove" data-todo="<?= $item['id']; ?>">Remove</button></td>
+        				<td><button class="btn btn-danger btn-remove" data-todo="<?= $item['id']; ?>">Remove</button></td>
     				</tr>
     			<? endforeach; ?>
 			</ul>
@@ -100,17 +106,23 @@ $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </ul>
 
 	<!-- form to post new items to the database-->
-	<form method="POST" action="new_todo.php">
-		<p>
-			<label for="new_item">New Item:</label>
-			<input type="text" id="new_item" name="new_item" autofocus="autofocus" value="">
-			<button>Add Item</button>
-		</p>
-	</form>
+	<div id="add_form">
+        <form method="POST" action="#">
+    		<p>
+    			<label for="new_item">New Item:</label>
+    			<input type="text" id="new_item" name="new_item" autofocus="autofocus" value="">
+    			<button class="btn btn-primary">Add Item</button>
+    		</p>
+    	</form>
+    </div>
 
-	<form method="POST" action="new_todo.php" id="remove_form">
+	<form method="POST" action="#" id="remove_form">
 		<input type="hidden" name="remove_id" id="remove_id"  value="">
 	</form>
+
+    <form method="POST" action="/new_todo.php" id="reset_form">
+        <button name="reset" class="btn-reset btn btn-warning">Reset</button>
+    </form>
 
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script>
@@ -122,6 +134,13 @@ $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         	    $('#remove_form').submit();
         	}
         });
+
+        // $('.btn-reset').click(function() {
+        //     if(confirm('Are you sure you want to reset?'))
+        //     {
+        //         $('#reset_form').submit();
+        //     }
+        // });
     </script>
 
 </body>
